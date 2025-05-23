@@ -14,10 +14,13 @@
 #![warn(clippy::all, clippy::nursery, clippy::pedantic, clippy::cargo)]
 
 use serde::Deserialize;
-use serde_json::{Result, from_reader};
+use serde_json::{Result as SerdeResult, from_reader};
 use std::{
     collections::HashMap,
-    path::PathBuf,
+    fs::{self, File},
+    io,
+    path::{Path, PathBuf},
+    process,
 };
 
 /// An entry in the `objects` field.
@@ -47,7 +50,7 @@ struct Data {
 /// ## Unexpected Behavior
 ///
 /// This function may not behave as expected if the hash is less than 3 bytes long.
-pub fn load_index<R: std::io::Read>(reader: R) -> Result<HashMap<PathBuf, PathBuf>> {
+pub fn load_index<R: io::Read>(reader: R) -> SerdeResult<HashMap<PathBuf, PathBuf>> {
     let data: Data = from_reader(reader)?;
     let mut map = HashMap::new();
 
@@ -60,4 +63,37 @@ pub fn load_index<R: std::io::Read>(reader: R) -> Result<HashMap<PathBuf, PathBu
     }
 
     Ok(map)
+}
+
+/// Extracts assets, given the index path and the output path.
+pub fn run(index_path: &Path, output_path: &Path) -> io::Result<()> {
+    // Create the output path if it doesn't exist
+    if !output_path.exists() {
+        fs::create_dir_all(output_path)?;
+    }
+    // Resolve objects base path
+    let base_path = index_path.parent().and_then(|p| p.parent());
+    let Some(base_path) = base_path else {
+        eprintln!("Failed to resolve base path");
+        process::exit(1);
+    };
+    let base_path = base_path.join("objects");
+    // Read the index
+    let index_file = File::open(index_path)?;
+    let index = load_index(index_file)?;
+
+    // Iterate over the hashmap
+    for (hashed_path, meaningful_path) in index.into_iter() {
+        // Copy `base_path/hashed_path` to `output_path/meaningful_path`
+        let src = base_path.join(&hashed_path);
+        let dest = output_path.join(meaningful_path);
+        // Create the file recursively
+        if let Some(parent) = dest.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        // Copy the file
+        fs::copy(src, dest)?;
+    }
+
+    Ok(())
 }

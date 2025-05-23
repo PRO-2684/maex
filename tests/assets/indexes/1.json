@@ -1,0 +1,12 @@
+{
+    "objects": {
+        "icons/icon_128x128.png": {
+            "hash": "b62ca8ec10d07e6bf5ac8dae0c8c1d2e6a1e3356",
+            "size": 12345
+        },
+        "icons/icon_16x16.png": {
+            "hash": "5ff04807c356f1beed0b86ccf659b44b9983e3fa",
+            "size": 781
+        }
+    }
+}
