@@ -76,11 +76,13 @@ pub fn run(index_path: &Path, output_path: &Path) -> io::Result<()> {
     };
     let base_path = base_path.join("objects");
     // Read the index
+    eprintln!("Reading index from {}...", index_path.display());
     let index_file = File::open(index_path)?;
     let index = load_index(index_file)?;
 
     // Iterate over the hashmap
     for (hashed_path, meaningful_path) in index.into_iter() {
+        eprintln!("{} -> {}", hashed_path.display(), meaningful_path.display());
         // Copy `base_path/hashed_path` to `output_path/meaningful_path`
         let src = base_path.join(&hashed_path);
         let dest = output_path.join(meaningful_path);
