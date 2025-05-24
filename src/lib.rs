@@ -2,13 +2,10 @@
 //!
 //! If you are reading this, you are reading the documentation for the `maex` library crate. For the cli, kindly refer to the README file.
 //!
-//! ## Assets Folder
+//! This library provides two public functions, one low-level and one high-level:
 //!
-//! The `assets` folder, usually located directly under `.minecraft`, consists of 3 folders:
-//!
-//! - `index`: This folder contains several JSON files for indexing the assets, each for a specific game version. Each JSON file contains a single key `objects` at the top level, which is a map of asset paths to their corresponding hash and size.
-//! - `objects`: This folder contains the actual assets, which are stored in a hashed format. Specifically, denote the hash as `hash`, the asset will be stored in `objects/hash[0..2]/hash`.
-//! - `skins`: Structured like `objects`, containing skin images, but I don't know where their indices are stored.
+//! - [`load_index`]: Reads the index (as a reader), returns a map of hashed paths to meaningful paths.
+//! - [`run`]: Extracts assets, given the index path and the output path.
 
 #![deny(missing_docs)]
 #![warn(clippy::all, clippy::nursery, clippy::pedantic, clippy::cargo)]

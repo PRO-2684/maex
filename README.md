@@ -8,7 +8,7 @@
 [![Crates.io Total Downloads](https://img.shields.io/crates/d/maex?logo=rust)](https://crates.io/crates/maex)
 [![docs.rs](https://img.shields.io/docsrs/maex?logo=rust)](https://docs.rs/maex)
 
-Minecraft (Java Edition) Assets Extractor
+Minecraft (Java Edition) Assets Extractor.
 
 ## 📥 Installation
 
@@ -34,7 +34,22 @@ TODO
 
 ## 📖 Usage
 
-TODO
+```shell
+$ maex
+Usage: maex <index> [<output>]
+```
+
+Where `<index>` is the path to the index JSON file, and `<output>` is the output directory where the assets will be extracted to. If `<output>` is not specified, the assets will be extracted to a directory next to the executable, with timestamp as the name.
+
+Refer to the [documentation](https://docs.rs/maex) for using this crate as a library.
+
+## 📂 Assets Folder
+
+The `assets` folder, usually located directly under `.minecraft`, consists of 3 folders:
+
+- `index`: This folder contains several JSON files for indexing the assets, each for a specific game version. Each JSON file contains a single key `objects` at the top level, which is a map of asset paths to their corresponding hash and size.
+- `objects`: This folder contains the actual assets, which are stored in a hashed format. Specifically, denote the hash as `hash`, the asset will be stored in `objects/hash[0..2]/hash`.
+- `skins`: Structured like `objects`, containing skin images, but I don't know where their indices are stored.
 
 ## 🎉 Credits
 
